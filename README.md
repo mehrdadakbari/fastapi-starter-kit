@@ -32,6 +32,7 @@ fastapi-starter-kit/
 │   │   ├── user.py
 │   ├── repositories/
 │   ├── routes/
+│   │   ├── user.py
 │   ├── services/
 │   ├── main.py           # FastAPI entry point
 │   └── __init__.py
