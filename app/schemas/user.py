@@ -1,11 +1,10 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from passlib.context import CryptContext
-from app.dtos.user import UserRole
+from dtos.user import UserRole
 from dtos.user import UserBaseDTO
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 # -----------------------------
 # Input Schemas
@@ -18,7 +17,9 @@ class UserCreateSchema(BaseModel):
     inactive: bool = Field(default=False)
 
     @field_validator("password", mode="before")
+    @classmethod
     def hash_password(cls, v: str) -> str:
+        """Automatically hash the password before saving."""
         return pwd_context.hash(v)
 
 
@@ -48,4 +49,4 @@ class UserRefreshTokenSchema(BaseModel):
 # Output Schema
 # -----------------------------
 class UserResponseSchema(UserBaseDTO):
-    pass  # inherits all fields from UserBaseDTO, including id, timestamps, role
+    pass
