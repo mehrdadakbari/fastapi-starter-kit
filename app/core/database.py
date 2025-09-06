@@ -12,12 +12,15 @@ logger = logging.getLogger(__name__)
 def init_db():
     """Initialize MongoDB connection."""
     try:
-        db_url = settings.db_url
         connect(
-            db=settings.db_name,
-            host=db_url,
+            db = settings.db_name,
+            username = settings.db_user,
+            password = settings.db_password,
+            host = settings.db_host,
+            port = settings.db_port,
             uuidRepresentation="standard"
         )
+
         logger.info("✅ Connected to MongoDB")
     except Exception as e:
         logger.error(f"❌ Failed to connect to MongoDB: {e}")
