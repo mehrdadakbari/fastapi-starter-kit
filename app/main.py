@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import logging
 
-from routes import user
+from routes import user, jwt_auth
 from core.logging_config import setup_logging
 from core.config import settings
 from core.database import lifespan
@@ -41,6 +41,8 @@ app.add_middleware(
 # -----------------------------
 api_prefix = "/api/v1"
 app.include_router(user.router, prefix=api_prefix)
+app.include_router(jwt_auth.router, prefix=api_prefix)
+
 #app.include_router(jwt_auth.router, prefix=api_prefix)
 
 # -----------------------------
