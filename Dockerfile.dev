@@ -1,0 +1,13 @@
+
+FROM python:3.13.7-slim
+
+WORKDIR /usr/src/
+
+COPY ./requirements.txt ./requirements.txt
+COPY ./.env.sample ./.env
+
+RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
+
+COPY ./app ./app
+
+CMD ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000"]

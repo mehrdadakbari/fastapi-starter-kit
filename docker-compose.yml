@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: fastapi_starter_kit
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: "fastapi starter kit"
+      SECRET_KEY: "008901ebb1058320c81de1fd69b867e9e585f5bfeb2936a6ab8191d1902f302e"
+      DB_NAME: fastapi_starter_kit
+      DB_USER: root
+      DB_PASSWORD: pass
+      DB_HOST: mongo
+      DB_PORT: 27017
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017" # host:container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_INITDB_DATABASE: fastapi_starter_kit
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "-u", "root", "-p", "pass", "--authenticationDatabase=admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  redis:
+    image: redis:8.2.1-alpine
+    container_name: redis_db
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+volumes:
+  mongo_data:
